@@ -7,6 +7,11 @@ import os
 import tempfile
 import struct
 
+# Constants for Ollama and Whisper models
+LLM_MODEL = "gemma3n:e4b"  # Ollama model to use
+WHISPER_MODEL = "small.en"  # Whisper model to use for transcription    
+# ['tiny.en', 'tiny', 'base.en', 'base', 'small.en', 'small', 'medium.en', 'medium', 'large-v1', 'large-v2', 'large-v3', 'large', 'large-v3-turbo', 'turbo']
+
 # Audio recording settings
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -67,14 +72,25 @@ def record_audio():
 
 def transcribe_audio(audio_file):
     """Transcribe audio file using Whisper."""
-    model = whisper.load_model("base")
+    model = whisper.load_model(WHISPER_MODEL)
     result = model.transcribe(audio_file)
     return result["text"]
 
 def generate_response(prompt):
     """Generate response using Ollama."""
-    response = ollama.generate(model="gemma3:4b", prompt=prompt, think=False)
-    return response['response']
+    messages=[
+        {
+            'role': 'system',
+            'content': 'You are an AI Voice assistant. Give your responses in a short, concise and conversational manner.'
+        },
+        {
+            'role': 'user',
+            'content': prompt,
+        },
+    ]
+
+    response = ollama.chat(model=LLM_MODEL, messages=messages)
+    return response['message']['content']
 
 def text_to_speech(text):
     """Convert text to speech and save to a temporary MP3 file."""
