@@ -5,13 +5,14 @@ import ollama
 from openai import OpenAI
 import os
 import tempfile
+import struct
 
 # Audio recording settings
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-RECORD_SECONDS = 5  # Adjust as needed
+BUFFER_RECORD_SECONDS = 2  # Adjust as needed
 
 def record_audio():
     """Record audio from the microphone and save to a temporary WAV file."""
@@ -20,9 +21,30 @@ def record_audio():
     print("Recording... Speak now.")
     frames = []
     
-    for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
-        frames.append(data)
+    contains_data = True
+    while contains_data:
+        current_buffer_content = []
+        for _ in range(0, int(RATE / CHUNK * BUFFER_RECORD_SECONDS)):
+            data = stream.read(CHUNK)
+            # print("Recording chunk 2..." + str(len(data)))
+            # print("Recording chunk 2..." + str(data[:20]))
+            
+            # print("Max Data " + str(max(data)))
+            frames.append(data)
+            current_buffer_content.append(data)
+                
+        # Check if average amplitude of the current buffer is above a threshold
+        # Flatten all samples in the buffer
+        all_samples = []
+        for chunk in current_buffer_content:
+            # Unpack chunk into 16-bit signed integers
+            samples = struct.unpack('<' + 'h' * (len(chunk) // 2), chunk)
+            all_samples.extend(samples)
+        # Calculate average amplitude
+        average_amplitude = sum(abs(s) for s in all_samples) / len(all_samples) if all_samples else 0
+        # print(f"Average amplitude: {average_amplitude}")
+        if average_amplitude < 100:  # Adjust threshold as needed
+            contains_data = False
     
     print("Recording finished.")
     stream.stop_stream()

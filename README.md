@@ -5,7 +5,7 @@
 
 Create Virtual Environment
 ```
-virtualenv -p python3 .venv
+python3 -m venv .venv
 source .venv/bin/activate 
 ```
 
@@ -22,5 +22,5 @@ https://github.com/remsky/Kokoro-FastAPI
 
 ## Run Script
 
-.venv/bin/python source/script.py
+python source/script.py
 
