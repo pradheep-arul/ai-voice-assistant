@@ -12,7 +12,7 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-BUFFER_RECORD_SECONDS = 2  # Adjust as needed
+BUFFER_RECORD_SECONDS = 1  # Adjust as needed
 
 def record_audio():
     """Record audio from the microphone and save to a temporary WAV file."""
@@ -21,8 +21,9 @@ def record_audio():
     print("Recording... Speak now.")
     frames = []
     
+    has_not_spoken_yet = True
     contains_data = True
-    while contains_data:
+    while contains_data or has_not_spoken_yet:
         current_buffer_content = []
         for _ in range(0, int(RATE / CHUNK * BUFFER_RECORD_SECONDS)):
             data = stream.read(CHUNK)
@@ -45,6 +46,9 @@ def record_audio():
         # print(f"Average amplitude: {average_amplitude}")
         if average_amplitude < 100:  # Adjust threshold as needed
             contains_data = False
+        else:
+            has_not_spoken_yet = False
+            contains_data = True
     
     print("Recording finished.")
     stream.stop_stream()
@@ -100,6 +104,10 @@ def main():
         print("Transcribing...")
         prompt = transcribe_audio(audio_file)
         print(f"You said: {prompt}")
+        
+        if prompt.strip() == "":
+            print("No speech detected. Please try again.")
+            return
         
         # Step 3: Generate response with Ollama
         print("Generating response...")
