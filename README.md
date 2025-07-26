@@ -15,7 +15,12 @@ pip install ollama
 pip install pyaudio
 pip install openai
 pip install openai-whisper
+
+pip install "fastrtc[vad, stt, tts]"
+pip install fastrtc
 ```
+
+
 
 Install and Setup the Kokoro-FastAPI
 https://github.com/remsky/Kokoro-FastAPI

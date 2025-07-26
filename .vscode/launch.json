@@ -12,11 +12,19 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python Debugger: Script",
+            "name": "Python Debugger: PyAudio Script",
             "type": "debugpy",
             "request": "launch",
             "python": "${workspaceFolder}/.venv/bin/python",
-            "program": "${workspaceFolder}/source/script.py",
+            "program": "${workspaceFolder}/source/pyaudio_script.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python Debugger: FastRTC Script",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "program": "${workspaceFolder}/source/fastrtc_script.py",
             "console": "integratedTerminal"
         }
     ]
