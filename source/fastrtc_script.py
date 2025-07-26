@@ -1,7 +1,13 @@
 import numpy as np
 import ollama
-from fastrtc import (AlgoOptions, ReplyOnPause, SileroVadOptions, Stream,
-                     get_stt_model, get_tts_model)
+from fastrtc import (
+    AlgoOptions,
+    ReplyOnPause,
+    SileroVadOptions,
+    Stream,
+    get_stt_model,
+    get_tts_model,
+)
 
 LLM_MODEL = "gemma3n:e4b"  # Ollama model to use
 
